@@ -1,0 +1,16 @@
+{
+  "name": "kiseki-frida",
+  "version": "1.0.0",
+  "description": "Frida script for various Kiseki/Trails PC games.",
+  "private": true,
+  "main": "src/main.ts",
+  "scripts": {
+    "build": "frida-compile src/main.ts -o \"out\\hnk.js\" -c",
+    "watch": "frida-compile src/main.ts -o \"out\\hnk.js\" -w"
+  },
+  "devDependencies": {
+    "@types/frida-gum": "^19.0.1",
+    "@types/node": "^25.3.0",
+    "frida-compile": "^19.0.4"
+  }
+}

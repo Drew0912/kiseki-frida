@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "sourceMap": false,
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "Node16",
+    // "moduleResolution": "node16",
+    "resolveJsonModule": true,
+    "strict": true,
+    "noEmit": true,
+    "allowJs": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "src",
+    "node_modules"
+  ]
+}
