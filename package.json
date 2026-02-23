@@ -5,15 +5,18 @@
   "private": true,
   "main": "src/main.ts",
   "scripts": {
-    "build": "frida-compile src/main.ts -o \"out\\hnk.js\" -c",
-    "watch": "frida-compile src/main.ts -o \"out\\hnk.js\" -w"
+    "build": "npm run build_ed85",
+    "test": "frida-compile --tsconfig tsconfig.json src/main.ts -o out.js -c",
+    "build_ed85": "frida-compile --tsconfig tsconfig.json src/ed8/ed85/main.ts -o \"out\\ed85\\hnk.js\" -c",
+    "watch_ed85": "frida-compile --tsconfig tsconfig.json src/ed8/ed85/main.ts -o \"out\\ed85\\hnk.js\" -w"
   },
   "devDependencies": {
-    "@types/frida-gum": "^19.0.1",
-    "@types/node": "^25.3.0",
-    "frida-compile": "^19.0.4"
+    "@types/frida-gum": "^18.4.2",
+    "@types/node": "^18.16.0",
+    "@types/sprintf-js": "^1.1.4",
+    "frida-compile": "^10.2.5"
   },
   "dependencies": {
-    "@types/sprintf-js": "^1.1.4"
+    "sprintf-js": "^1.1.3"
   }
 }

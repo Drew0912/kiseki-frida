@@ -1,18 +1,19 @@
 {
   "compilerOptions": {
     "sourceMap": false,
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "module": "Node16",
-    // "moduleResolution": "node16",
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    // "module": "commonjs",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "strict": true,
     "noEmit": true,
     "allowJs": true,
-    "esModuleInterop": true
-  },
-  "include": [
-    "src",
-    "node_modules"
-  ]
+    "esModuleInterop": true,
+    "types": [
+      "frida-gum",
+      "node",
+      "sprintf-js"
+    ]
+  }
 }
