@@ -29,10 +29,16 @@ export class Interceptor2 {
         retType: RetType,
         argTypes: ArgTypes,
     ) {
-        const stub = new NativeFunction(target, retType, argTypes);
+        // Adding { exceptions: "propagate" } removes system error when creating new NativeFunctions on windows functions.
+        // Issue not present on Frida 16.4.10 and older, only newer?
+        const stub = new NativeFunction(target, retType, argTypes, { exceptions: "propagate" });
         Interceptor.replace(target, new NativeCallback(replacement, retType, argTypes, 'win64'));
         return stub;
     }
+}
+
+export function getReturnAddress(ctx: X64CpuContext){
+    log(`rsp.readPointer - ReturnAddress: ${ctx.rsp.readPointer().toString()}`);
 }
 
 // Synchronous scan using input sig string.
@@ -56,7 +62,7 @@ export function log(format: string, ...args: any[]): void {
     const time = sprintf('%02d:%02d:%02d.%03d', now.getHours() + offset, now.getMinutes(), now.getSeconds(), now.getMilliseconds());
     const msg = `${time} ${format}`;
     console.log(msg);
-    //send({msg: 'log', data: msg});
+    // send({msg: 'log', data: msg});
 }
 
 export function arrayToBytes(data: number[]): ArrayBuffer {

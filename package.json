@@ -11,7 +11,7 @@
     "watch_ed85": "frida-compile --tsconfig tsconfig.json src/ed8/ed85/main.ts -o \"out\\ed85\\hnk.js\" -w"
   },
   "devDependencies": {
-    "@types/frida-gum": "^18.4.2",
+    "@types/frida-gum": "^18.8.2",
     "@types/node": "^18.16.0",
     "@types/sprintf-js": "^1.1.4",
     "frida-compile": "^10.2.5"
