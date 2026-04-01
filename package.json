@@ -8,7 +8,8 @@
     "build": "npm run build_ed85",
     "test": "frida-compile --tsconfig tsconfig.json src/main.ts -o out.js -c",
     "build_ed85": "frida-compile --tsconfig tsconfig.json src/ed8/ed85/main.ts -o \"out\\ed85\\hnk.js\" -c",
-    "watch_ed85": "frida-compile --tsconfig tsconfig.json src/ed8/ed85/main.ts -o \"out\\ed85\\hnk.js\" -w"
+    "watch_ed85": "frida-compile --tsconfig tsconfig.json src/ed8/ed85/main.ts -o \"out\\ed85\\hnk.js\" -w",
+    "attach_ed85": "frida -n hnk.exe -l \"out/ed85/hnk.js\""
   },
   "devDependencies": {
     "@types/frida-gum": "^18.8.2",

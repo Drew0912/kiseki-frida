@@ -1,6 +1,9 @@
 # nodejs
 node_modules
 
+# Python
+.venv
+
 # User-specific files
 *.user
 .vs/
