@@ -141,6 +141,7 @@ export const Offsets = (function() {
     return {
         ED85 : {
             ScriptManager : 0x1DA8,
+            systemScript : 0x5F08F0,
             t_bgm : 0x5F8120, //???
         },
 
@@ -163,8 +164,8 @@ export const Offsets = (function() {
                 sound : 0x3F358,
                 sound2 : 0x42570,
                 tk_common : 0x45788,
-                title00 : 0x1E518,
-                debug : 0x21730, // Merge face.dat and debug.dat
+                map : 0x1E518, // title00 is loaded here when no map.
+                // debug : 0x21730, // Merge face.dat and debug.dat
             },
         },
 
@@ -185,6 +186,12 @@ export const Offsets = (function() {
             FieldBGM : 0x220,
             NormalBGM : 0x222,
             PinchBGM : 0x226,
+
+            Scripts : { // To check
+                btlscript : 0x308,
+                btlmagic : 0x3D90,
+                btlitem : 0x3D98,
+            },
         },
 
         BattleCharacter : { // BattleCharWork

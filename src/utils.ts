@@ -37,6 +37,14 @@ export class Interceptor2 {
     }
 }
 
+export class NativePointerObject extends NativePointer {
+    private impl: NativePointer = this.add(0);
+
+    get pointer(): NativePointer {
+        return this.impl;
+    }
+}
+
 export function getReturnAddress(ctx: X64CpuContext){
     log(`rsp.readPointer - ReturnAddress: ${ctx.rsp.readPointer().toString()}`);
 }
@@ -91,7 +99,7 @@ export function UTF8(s: string): NativePointer {
 
 
 // Function that takes in a string which contains a double in hex and returns the double.
-export function hexDoubletoDouble(hexString : string) : number {
+export function hexDoubletoDouble(hexString : string): number {
     if (hexString === '0x0') {
         return 0;
     }
@@ -107,6 +115,20 @@ export function hexDoubletoDouble(hexString : string) : number {
 
     let doubles = new Float64Array(buffer);
     return doubles[0];
+}
+
+export function hexStringToArray(hexString: string): number[] {
+  if (hexString.length % 2 !== 0) {
+    throw new Error("Invalid hex string");
+  }
+
+  const arr: number[] = []
+
+  for (let i = 0; i < hexString.length; i += 2) {
+    arr.push(parseInt(hexString.slice(i, i + 2), 16));
+  }
+
+  return arr;
 }
 
 export function uInt32Tofloat(num: number): number {
