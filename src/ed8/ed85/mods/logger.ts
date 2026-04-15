@@ -88,8 +88,9 @@ function hookOutputPrintf() {
 }
 
 
-export function setupOutputDebugInfo(level: number) {
-    loggerLevel = level;
+export function setupOutputDebugInfo(level: LoggerLevel) {
+    setLoggerLevel(level);
+
     // Do hooks
     hookOutputPrintf()
     hookOutputDebugString()

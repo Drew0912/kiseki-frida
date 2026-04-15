@@ -52,6 +52,8 @@ export const Addrs = (function() {
                     GetScriptByID : MODULE_ED85.base.add(0x59BC20),
                     // InitScripts   : MODULE_ED85.base.add(0x2CB5F0), //v1.0.8
                     // InitED8Script : MODULE_ED85.base.add(0x10D410), //v1.0.8
+                    InitED8Script : MODULE_ED85.base.add(0x59C900), // Not needed, used in InitED8ScriptAndScriptScn.
+                    InitED8ScriptAndScriptScn : MODULE_ED85.base.add(0x10D250),
                 },
 
                 AbnormalStatus: {
@@ -112,6 +114,8 @@ export const Addrs = (function() {
                     GetScriptByID : MODULE_ED85.base.add(0x5A1CA0),
                     // InitScripts   : MODULE_ED85.base.add(0x2CB5F0), //v1.0.8
                     // InitED8Script : MODULE_ED85.base.add(0x10D410), //v1.0.8
+                    InitED8Script : MODULE_ED85.base.add(0x5A2980), // Not needed, used in InitED8ScriptAndScriptScn.
+                    InitED8ScriptAndScriptScn : MODULE_ED85.base.add(0x10D430),
                 },
 
                 AbnormalStatus: {
