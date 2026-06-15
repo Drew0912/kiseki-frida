@@ -1,0 +1,217 @@
+import { Addrs } from "../addrs";
+import { Interceptor2 } from "../../../utils";
+// import { BattleProc, ED85 } from "../types";
+import * as utils from "../../../utils";
+
+// import { setLoggerLevel } from "./logger";
+// import { displayEnemyCPByName, replaceDescriptionWithEnemyStats } from "./advancedEnemyStats";
+// import { addToReplacedBGMList, loadReplacedBGMFromJSON, resetReplacedBGMList, writeReplacedBGMToJSON } from "./bgmControl";
+
+import { ED85 } from "../types/ed85";
+
+import { callEx } from "../main";
+
+let tracing = false;
+export function setTracing(bool : boolean) {
+    tracing = bool;
+}
+
+// Opcode hooks: List[offsetToOpcode, endOffsetOpcode, ifExecute: boolean]
+let offsetToOpcode = 0;
+let endOffsetToOpcode = 0;
+let ifExecute = true;
+let codeToExecute = "";
+
+// Move all to scriptManager.
+interface IOpcodeHook {
+    startOffset: number,
+    endOffset: number,
+    hookCode: string,
+    scriptName?: string, // Check script for safety.
+    scenaFuncName?: string, // Check func name for safety.
+}
+
+let opcodeHooks: IOpcodeHook[] = []
+
+export function addOpcodeHook(startOpcodeOffset: number, endOpcodeOffset: number, code: string, script: string = "", func: string = ""): void {
+    const hook: IOpcodeHook = {
+        startOffset: startOpcodeOffset,
+        endOffset: endOpcodeOffset,
+        hookCode: code,
+        scriptName: script,
+        scenaFuncName: func
+    };
+    opcodeHooks.push(hook);
+
+}
+
+export function resetOpcodeHooks() {
+    opcodeHooks = [];
+}
+
+// Called at 0x14059b80a
+export function hookScriptExtender() {
+    const ScriptExtender = Interceptor2.jmp(
+        Addrs.Script.ScriptInterpreter,
+        function(ScriptScn : NativePointer, Script : NativePointer, Opcode : number) : number {
+            // ScriptScn is the same as Script Class (at least for debug).
+            // i.e ScriptScn == ED85.scriptManager.debug.pointer
+            // Script is ScriptScnThread struct.
+
+            // Script + 0x828 == ChrId?
+            // ScriptScnThread + 0x94 = idOfFunc
+            // ScriptScnThread + 0x98 = ptrToScript2?
+            const opcodeInScriptOffset = (Script.add(0x78)).readU32();
+            const scriptInMemory = (Script.add(0x70)).readPointer()!;
+
+            // const ctx = (this.context as X64CpuContext);
+            // utils.log(`rsp.readPointer: ${ctx.rsp.readPointer().toString()}`);
+
+            // utils.log(`Context: ${JSON.stringify(ctx)}`);
+            // var bytes = ptr(0x141656050).readByteArray(0x627)!;
+            // utils.log(hexdump(bytes));
+            // utils.log(`SE args[0]: ${ScriptScn}`)
+            // utils.log(`SE args[1]: ${Script}`)
+
+            for(const hook of opcodeHooks) {
+                if(hook.scriptName == Script.add(0x14).readAnsiString()! || hook.scriptName == "" ){
+                    if(hook.scenaFuncName == Script.add(0x34).readAnsiString()! || hook.scenaFuncName == ""){
+                        if(hook.startOffset == opcodeInScriptOffset) {
+                            callEx(hook.hookCode);
+
+                            if(hook.startOffset == hook.endOffset){
+                                return ScriptExtender(ScriptScn, Script, Opcode);
+                            }
+                            else {
+                                (Script.add(0x78)).writeU32(hook.endOffset);
+                                return Number(true);
+                            }
+                        }    
+                    }
+                    
+                }
+            }
+
+            if(tracing) {
+                const scriptName = Script.add(0x14).readAnsiString()!;
+                const currentFunction = Script.add(0x34).readAnsiString()!;
+                utils.log(`    OP_%02X @ ${scriptName}.${currentFunction}.${Script}`, Opcode);
+            }
+
+            // Custom opcode.
+            if (Opcode == 0xF1) { // Map instruction Call2(OP_F1) to DebugLog(OP_07).
+                const stringInF1 = scriptInMemory.add(opcodeInScriptOffset + 7).readAnsiString()!; // DebugString hex representation -> 07 (** ** ** FF) 02 DD STRING.
+                utils.log(`    Call2SE(${stringInF1})`);
+                if (stringInF1.slice(0, 6) == 'SBreak'){
+                    ED85.SBreak(parseInt(stringInF1.slice(7)));
+                    utils.log("SBreak");
+                }            
+                else if (stringInF1.slice(0, 6) == 'opcode') {
+                    switch(stringInF1) {
+                        case 'opcodeTracingOn': {
+                            tracing = true;
+                            break;
+                        }
+                        case 'opcodeTracingOff': {
+                            tracing = false;
+                            break;
+                        }
+                    }
+                }
+                // else if (stringInF1.slice(0, 15) == 'OutputDebugInfo') {
+                //     switch(stringInF1) {
+                //         case 'OutputDebugInfo0': {
+                //             setLoggerLevel(0);
+                //             break;
+                //         }
+                //         case 'OutputDebugInfo1': {
+                //             setLoggerLevel(1);
+                //             break;
+                //         }
+                //         case 'OutputDebugInfo2': {
+                //             setLoggerLevel(2);
+                //             break;
+                //         }
+                //         case 'OutputDebugInfo3': {
+                //             setLoggerLevel(3);
+                //             break;
+                //         }
+                //     }
+                // }
+                else if (stringInF1 == 'TestSE') {
+                    utils.log("TestSE");
+                }
+                // else if (stringInF1 == "TurnCounterEnemy") {
+                //     // Make it so that enemy turns do not increase this value.
+                //     ED85.battleProc.BattleResultManager.turnsPassedInBattle--;
+                // }
+                // else if (stringInF1.slice(0,9) == 'DisplayCP') {
+                //     displayEnemyCPByName(parseInt(stringInF1.slice(10)));
+                // }
+                // else if (stringInF1.slice(0,11) == 'ReplaceDesc') {
+                //     replaceDescriptionWithEnemyStats(parseInt(stringInF1.slice(12)));
+                // }
+                // else if (stringInF1.slice(0,10) == 'ReplaceBGM') {
+                //     const str = stringInF1.slice(11,stringInF1.length-1).split(', ')
+                //     addToReplacedBGMList({oldBGMId: parseInt(str[0]), replacedBGMId: parseInt(str[1])});
+                // }
+                // else if (stringInF1 == 'ResetBGM()'){
+                //     resetReplacedBGMList();
+                // }
+                // else if (stringInF1 == 'WriteReplacedBGMToJSON()') {
+                //     writeReplacedBGMToJSON();
+                // }
+                // else if (stringInF1 == 'LoadReplacedBGMFromJSON()') {
+                //     loadReplacedBGMFromJSON();
+                // }
+                else {
+                    utils.log(`ED8Frida.scriptExtender: Unknown string (${stringInF1})`);
+                }
+                (Script.add(0x78)).writeU32(opcodeInScriptOffset+7+(stringInF1.length+1))
+                return Number(true); // Don't actually know what it returns...
+                // return ScriptExtender(ScriptScn, Script, 7); 
+            }
+
+            // if (Opcode == 0x2D) { // Clear console log slightly.
+            //     // utils.log(Opcode1.toString());
+            //     return ScriptExtender(ScriptScn, Script, Opcode);
+            // }
+
+            // (Script.add(0x78)).writeU32(opcodeInScriptOffset+1)
+
+            return ScriptExtender(ScriptScn, Script, Opcode);
+        },
+        'bool', ['pointer', 'pointer', 'uint16'],
+    );
+
+
+}
+
+/*
+Version not replacing function to avoid crashing when using cheat engine.
+*/
+export function interceptScriptInterpreter() {
+    Interceptor.attach(Addrs.Script.ScriptInterpreter, function() {
+        const ctx = (this.context as X64CpuContext);
+
+        const offset = ctx.rdx.toUInt32();
+        const script = ctx.rbx;
+
+        const scriptName = script.add(0x14).readAnsiString()!;
+        const currentFunction = script.add(0x34).readAnsiString()!;
+        const opcode = ctx.r8.and(0xFF).toUInt32();
+
+        const opcodeInScriptOffset = (script.add(0x78)).readU32();
+        const scriptInMemory = (script.add(0x70)).readPointer()!;
+
+        // utils.log(`    OP_${ctx.r8.and(0xFF).toUInt32().toString(16).toUpperCase()} @ ${scriptName}.${currentFunction}.${ptr(offset)}`);
+        utils.log(`    OP_%02X @ ${scriptName}.${currentFunction}.${ptr(offset)}`, opcode);
+        // utils.log(scriptInMemory.add(0x1C).readU32().toString(16)); //Magic bytes for game scripts (0xABCDEF00)
+        // utils.log(scriptInMemory.add(opcodeInScriptOffset).readU8().toString(16)); //Opcode from scriptInMemory
+
+        if (opcode == 0x07) { // Only output for DebugLog (OP_07)
+            utils.log(scriptInMemory.add(opcodeInScriptOffset + 7).readAnsiString()!); // DebugString hex representation -> 07 (** ** ** FF) 02 DD STRING
+        }
+        // utils.log(`    OP_%02X @ ${scriptName}.${currentFunction}`, opcode);
+    });
+}
