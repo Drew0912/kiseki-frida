@@ -14,15 +14,6 @@ export class Script extends NativePointer {
         return Script._Load(this, p, type, Number(debugLog));
     }
 
-    loadDebug(): NativePointer {
-        const path = 'bin/Win64/debug.dat'
-        if (isPathExists(path)){
-            return this.load(path, 0xFFFFFFFF, false);
-        }
-        const defaultPath = 'data/scripts/scena/dat_en/debug.dat';
-        return this.load(defaultPath, 0xFFFFFFFF, false);
-    }
-
     call(context: NativePointer, func: string, arg3: number, arg4: number): boolean {
         const f = Memory.allocUtf8String(func);
         return !!Script._Call(this, context, f, arg3, arg4);
