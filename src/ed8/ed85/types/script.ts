@@ -1,5 +1,4 @@
 import { Addrs } from "../addrs";
-import { isPathExists } from "../../../utils";
 
 export class Script extends NativePointer {
 
@@ -7,7 +6,7 @@ export class Script extends NativePointer {
     private static _Call = new NativeFunction(Addrs.Script.Call, "bool", ['pointer', 'pointer', 'pointer', 'uint32', 'uint8'], 'win64');
     private static _Call2 = new NativeFunction(ptr(0x1405a2200), "bool", ['pointer', 'pointer', 'uint32', 'uint16'], 'win64');
 
-    static readonly SIZE = 0x3218;
+    static readonly SIZE = 0x3218; // 0x3218 (works) from stack?, 0x3134 from script.call?
 
     load(path: string, type: number, debugLog: boolean = false): NativePointer {
         const p = Memory.allocUtf8String(path);
@@ -17,6 +16,10 @@ export class Script extends NativePointer {
     call(context: NativePointer, func: string, arg3: number, arg4: number): boolean {
         const f = Memory.allocUtf8String(func);
         return !!Script._Call(this, context, f, arg3, arg4);
+    }
+
+    get ptrToScriptInMemory(): NativePointer {
+        return this.add(0x3138);
     }
 
     // Thread?

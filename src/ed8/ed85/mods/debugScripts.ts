@@ -12,6 +12,7 @@ export function hookDebug() {
     
                 if (ret == 0) {
                     ScriptManager.initDebug();
+                    ScriptManager.initCustom();
                 }
     
                 return ret;

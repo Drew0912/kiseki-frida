@@ -9,7 +9,7 @@ import * as utils from "../../../utils";
 
 import { ED85 } from "../types/ed85";
 
-import { callEx } from "../main";
+// import { callEx } from "../main";
 
 let tracing = false;
 export function setTracing(bool : boolean) {
@@ -77,7 +77,7 @@ export function hookScriptExtender() {
                 if(hook.scriptName == Script.add(0x14).readAnsiString()! || hook.scriptName == "" ){
                     if(hook.scenaFuncName == Script.add(0x34).readAnsiString()! || hook.scenaFuncName == ""){
                         if(hook.startOffset == opcodeInScriptOffset) {
-                            callEx(hook.hookCode);
+                            // callEx(hook.hookCode);
 
                             if(hook.startOffset == hook.endOffset){
                                 return ScriptExtender(ScriptScn, Script, Opcode);
@@ -141,10 +141,10 @@ export function hookScriptExtender() {
                 else if (stringInF1 == 'TestSE') {
                     utils.log("TestSE");
                 }
-                // else if (stringInF1 == "TurnCounterEnemy") {
-                //     // Make it so that enemy turns do not increase this value.
-                //     ED85.battleProc.BattleResultManager.turnsPassedInBattle--;
-                // }
+                else if (stringInF1 == "TurnCounterEnemy") {
+                    // Make it so that enemy turns do not increase this value.
+                    ED85.battleProc.BattleResultManager.turnsPassedInBattle--;
+                }
                 // else if (stringInF1.slice(0,9) == 'DisplayCP') {
                 //     displayEnemyCPByName(parseInt(stringInF1.slice(10)));
                 // }

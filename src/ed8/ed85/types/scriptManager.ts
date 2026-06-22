@@ -24,6 +24,7 @@ export class ScriptManager extends NativePointer {
     private static debugMem = Memory.alloc(Script.SIZE);
     private static debugScript = new Script(ScriptManager.debugMem);
     static initDebug(): void {
+        // Memory.protect(customMem, debugMemSize, 'rw-')
         this._initED8ScriptAndScriptScn(ScriptManager.debugScript);
         // utils.log("[*] ScriptManager.initDebug Memory.alloc success!");
 
@@ -42,7 +43,34 @@ export class ScriptManager extends NativePointer {
         return this.debugScript;
     }
 
-    // private static ptrToCustom: Script = ScriptManager.initED8ScriptAndScriptScn();
+    // Script for calling external scena code. Not used naturally in game.
+    private static customMem = Memory.alloc(Script.SIZE);
+    private static customScript = new Script(ScriptManager.customMem);
+    static initCustom(): void {
+        this._initED8ScriptAndScriptScn(ScriptManager.customScript);
+        // utils.log("[*] ScriptManager.initCustom Memory.alloc success!");
+
+        this.customScript.load('bin/Win64/custom.dat', 0xFFFFFFFF, false);
+        // utils.log("[*] ScriptManager.initCustom Finished!")
+    }
+
+    private static readonly CUSTOM_DAT_HEADER = [
+        0x20, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00,
+        0x28, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00,
+        0x2C, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
+        0x39, 0x00, 0x00, 0x00, 0x00, 0xEF, 0xCD, 0xAB,
+        0x63, 0x75, 0x73, 0x74, 0x6F, 0x6D, 0x00, 0x00,
+        0x3C, 0x00, 0x00, 0x00, 0x2E, 0x00, 0x46, 0x72,
+        0x69, 0x64, 0x61, 0x5F, 0x46, 0x75, 0x6E, 0x63,
+        0x00, 0x00, 0x00, 0x00
+    ];
+    private static readonly RETURN_OPCODE = [ 0x01 ];
+    static callExternalScenaCode(code: string) {
+        const tempCode = this.CUSTOM_DAT_HEADER.concat(utils.hexStringToArray(code), this.RETURN_OPCODE);
+        const tempArray = utils.arrayToBytes(tempCode);
+        (this.customScript.ptrToScriptInMemory).writePointer(tempArray.unwrap());
+        this.customScript.call(ScriptManager.getThreadContext(), 'Frida_Func', 0, 1);
+    }
 
 
     static get battleProc(): BattleProc {
@@ -80,3 +108,8 @@ export class ScriptManager extends NativePointer {
 
     
 }
+
+/*
+Test scena codes:
+const RETURN_TO_TITLE = "02000000ff0a46435f4576656e74456e644d61704368616e67650002dd7469746c6500dd0001";
+*/
