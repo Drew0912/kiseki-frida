@@ -1,15 +1,14 @@
 import { Addrs } from "../addrs";
 import { Interceptor2 } from "../../../utils";
-// import { BattleProc, ED85 } from "../types";
 import * as utils from "../../../utils";
+
+import { ED85 } from "../types/ed85";
 
 // import { setLoggerLevel } from "./logger";
 // import { displayEnemyCPByName, replaceDescriptionWithEnemyStats } from "./advancedEnemyStats";
 // import { addToReplacedBGMList, loadReplacedBGMFromJSON, resetReplacedBGMList, writeReplacedBGMToJSON } from "./bgmControl";
 
-import { ED85 } from "../types/ed85";
-
-// import { callEx } from "../main";
+import { changeAllPartyEfficacy, resetAllPartyEfficacy } from "./hookBraveOrderEffect";
 
 let tracing = false;
 export function setTracing(bool : boolean) {
@@ -117,6 +116,12 @@ export function hookScriptExtender() {
                             break;
                         }
                     }
+                }
+                else if (stringInF1.slice(0, 17) == 'TestEXEBraveOrder') {
+                    changeAllPartyEfficacy();
+                }
+                else if (stringInF1.slice(0, 22) == 'TestEXEResetBraveOrder') {
+                    resetAllPartyEfficacy();
                 }
                 // else if (stringInF1.slice(0, 15) == 'OutputDebugInfo') {
                 //     switch(stringInF1) {
