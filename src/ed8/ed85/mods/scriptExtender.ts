@@ -8,7 +8,7 @@ import { ED85 } from "../types/ed85";
 // import { displayEnemyCPByName, replaceDescriptionWithEnemyStats } from "./advancedEnemyStats";
 // import { addToReplacedBGMList, loadReplacedBGMFromJSON, resetReplacedBGMList, writeReplacedBGMToJSON } from "./bgmControl";
 
-import { changeAllPartyEfficacy, resetAllPartyEfficacy } from "./hookBraveOrderEffect";
+import { initBraveOrderEffect, resetPartyEfficacy } from "./hookBraveOrderEffect";
 
 let tracing = false;
 export function setTracing(bool : boolean) {
@@ -117,11 +117,11 @@ export function hookScriptExtender() {
                         }
                     }
                 }
-                else if (stringInF1.slice(0, 17) == 'TestEXEBraveOrder') {
-                    changeAllPartyEfficacy();
+                else if (stringInF1.slice(0, 21) == 'BraveOrderEffectHook(') {
+                    initBraveOrderEffect(stringInF1.slice(21, -1));
                 }
-                else if (stringInF1.slice(0, 22) == 'TestEXEResetBraveOrder') {
-                    resetAllPartyEfficacy();
+                else if (stringInF1.slice(0, 25) == 'BraveOrderEffectHookReset') {
+                    resetPartyEfficacy();
                 }
                 // else if (stringInF1.slice(0, 15) == 'OutputDebugInfo') {
                 //     switch(stringInF1) {
