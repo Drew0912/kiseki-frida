@@ -5,7 +5,7 @@ import * as utils from "../../../utils";
 import { ED85 } from "../types/ed85";
 
 // import { setLoggerLevel } from "./logger";
-// import { displayEnemyCPByName, replaceDescriptionWithEnemyStats } from "./advancedEnemyStats";
+import { displayEnemyCPByName } from "./displayEnemyStats";
 // import { addToReplacedBGMList, loadReplacedBGMFromJSON, resetReplacedBGMList, writeReplacedBGMToJSON } from "./bgmControl";
 
 import { initBraveOrderEffect, resetPartyEfficacy } from "./hookBraveOrderEffect";
@@ -151,9 +151,10 @@ export function hookScriptExtender() {
                     // Make it so that enemy turns do not increase this value.
                     ED85.battleProc.BattleResultManager.turnsPassedInBattle--;
                 }
-                // else if (stringInF1.slice(0,9) == 'DisplayCP') {
-                //     displayEnemyCPByName(parseInt(stringInF1.slice(10)));
-                // }
+                else if (stringInF1.slice(0,9) == 'DisplayCP') {
+                    const pseudoChrId = parseInt(stringInF1.slice(10));
+                    displayEnemyCPByName(pseudoChrId);
+                }
                 // else if (stringInF1.slice(0,11) == 'ReplaceDesc') {
                 //     replaceDescriptionWithEnemyStats(parseInt(stringInF1.slice(12)));
                 // }

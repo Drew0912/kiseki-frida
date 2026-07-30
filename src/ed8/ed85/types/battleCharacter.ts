@@ -1,4 +1,3 @@
-import { NativePointerObject } from "../../../utils";
 import { Addrs, Offsets } from "../addrs";
 import { Character } from "./character";
 
@@ -50,13 +49,13 @@ export class BattleCharacter extends NativePointer {
     //     this.writeU16(Offsets.BattleCharacter.MaxEP, value);
     // }
 
-    // get currentCP(): number {
-    //     return this.readU16(Offsets.BattleCharacter.CurrentCP);
-    // }
+    get currentCP(): number {
+        return this.add(Offsets.BattleCharacter.CurrentCP).readU16();
+    }
 
-    // set currentCP(value: number) {
-    //     this.writeU16(Offsets.BattleCharacter.CurrentCP, value);
-    // }
+    set currentCP(value: number) {
+        this.add(Offsets.BattleCharacter.CurrentCP).writeU16(value);
+    }
 
     // get maxCP(): number {
     //     return this.readU16(Offsets.BattleCharacter.MaxCP);
