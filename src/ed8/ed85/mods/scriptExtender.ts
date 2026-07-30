@@ -61,7 +61,7 @@ export function hookScriptExtender() {
             // ScriptScnThread + 0x94 = idOfFunc
             // ScriptScnThread + 0x98 = ptrToScript2?
             const opcodeInScriptOffset = (Script.add(0x78)).readU32();
-            const scriptInMemory = (Script.add(0x70)).readPointer()!;
+            const scriptInMemory = (Script.add(0x70)).readPointer()!; // Magic bytes for game scripts (0xABCDEF00)
 
             // const ctx = (this.context as X64CpuContext);
             // utils.log(`rsp.readPointer: ${ctx.rsp.readPointer().toString()}`);
@@ -76,7 +76,7 @@ export function hookScriptExtender() {
                 if(hook.scriptName == Script.add(0x14).readAnsiString()! || hook.scriptName == "" ){
                     if(hook.scenaFuncName == Script.add(0x34).readAnsiString()! || hook.scenaFuncName == ""){
                         if(hook.startOffset == opcodeInScriptOffset) {
-                            // callEx(hook.hookCode);
+
 
                             if(hook.startOffset == hook.endOffset){
                                 return ScriptExtender(ScriptScn, Script, Opcode);
@@ -98,12 +98,13 @@ export function hookScriptExtender() {
             }
 
             // Custom opcode.
-            if (Opcode == 0xF1) { // Map instruction Call2(OP_F1) to DebugLog(OP_07).
-                const stringInF1 = scriptInMemory.add(opcodeInScriptOffset + 7).readAnsiString()!; // DebugString hex representation -> 07 (** ** ** FF) 02 DD STRING.
+            if (Opcode == 0xF1) {
+                const stringInF1 = scriptInMemory.add(opcodeInScriptOffset + 6).readAnsiString()!; // Hex representation -> F1 (** ** ** FF) DD STRING.
                 utils.log(`    Call2SE(${stringInF1})`);
+
                 if (stringInF1.slice(0, 6) == 'SBreak'){
                     ED85.SBreak(parseInt(stringInF1.slice(7)));
-                    utils.log("SBreak");
+                    // utils.log("SBreak");
                 }            
                 else if (stringInF1.slice(0, 6) == 'opcode') {
                     switch(stringInF1) {
@@ -172,17 +173,14 @@ export function hookScriptExtender() {
                 else {
                     utils.log(`ED8Frida.scriptExtender: Unknown string (${stringInF1})`);
                 }
-                (Script.add(0x78)).writeU32(opcodeInScriptOffset+7+(stringInF1.length+1))
+                (Script.add(0x78)).writeU32(opcodeInScriptOffset + 6 + (stringInF1.length+1)) // Edit VM pos.
                 return Number(true); // Don't actually know what it returns...
-                // return ScriptExtender(ScriptScn, Script, 7); 
             }
 
             // if (Opcode == 0x2D) { // Clear console log slightly.
             //     // utils.log(Opcode1.toString());
             //     return ScriptExtender(ScriptScn, Script, Opcode);
             // }
-
-            // (Script.add(0x78)).writeU32(opcodeInScriptOffset+1)
 
             return ScriptExtender(ScriptScn, Script, Opcode);
         },
@@ -194,29 +192,30 @@ export function hookScriptExtender() {
 
 /*
 Version not replacing function to avoid crashing when using cheat engine.
+Should no longer work due to removal of mapping to opcode 0x07
 */
-export function interceptScriptInterpreter() {
-    Interceptor.attach(Addrs.Script.ScriptInterpreter, function() {
-        const ctx = (this.context as X64CpuContext);
+// export function interceptScriptInterpreter() {
+//     Interceptor.attach(Addrs.Script.ScriptInterpreter, function() {
+//         const ctx = (this.context as X64CpuContext);
 
-        const offset = ctx.rdx.toUInt32();
-        const script = ctx.rbx;
+//         const offset = ctx.rdx.toUInt32();
+//         const script = ctx.rbx;
 
-        const scriptName = script.add(0x14).readAnsiString()!;
-        const currentFunction = script.add(0x34).readAnsiString()!;
-        const opcode = ctx.r8.and(0xFF).toUInt32();
+//         const scriptName = script.add(0x14).readAnsiString()!;
+//         const currentFunction = script.add(0x34).readAnsiString()!;
+//         const opcode = ctx.r8.and(0xFF).toUInt32();
 
-        const opcodeInScriptOffset = (script.add(0x78)).readU32();
-        const scriptInMemory = (script.add(0x70)).readPointer()!;
+//         const opcodeInScriptOffset = (script.add(0x78)).readU32();
+//         const scriptInMemory = (script.add(0x70)).readPointer()!;
 
-        // utils.log(`    OP_${ctx.r8.and(0xFF).toUInt32().toString(16).toUpperCase()} @ ${scriptName}.${currentFunction}.${ptr(offset)}`);
-        utils.log(`    OP_%02X @ ${scriptName}.${currentFunction}.${ptr(offset)}`, opcode);
-        // utils.log(scriptInMemory.add(0x1C).readU32().toString(16)); //Magic bytes for game scripts (0xABCDEF00)
-        // utils.log(scriptInMemory.add(opcodeInScriptOffset).readU8().toString(16)); //Opcode from scriptInMemory
+//         // utils.log(`    OP_${ctx.r8.and(0xFF).toUInt32().toString(16).toUpperCase()} @ ${scriptName}.${currentFunction}.${ptr(offset)}`);
+//         utils.log(`    OP_%02X @ ${scriptName}.${currentFunction}.${ptr(offset)}`, opcode);
+//         // utils.log(scriptInMemory.add(0x1C).readU32().toString(16)); //Magic bytes for game scripts (0xABCDEF00)
+//         // utils.log(scriptInMemory.add(opcodeInScriptOffset).readU8().toString(16)); //Opcode from scriptInMemory
 
-        if (opcode == 0x07) { // Only output for DebugLog (OP_07)
-            utils.log(scriptInMemory.add(opcodeInScriptOffset + 7).readAnsiString()!); // DebugString hex representation -> 07 (** ** ** FF) 02 DD STRING
-        }
-        // utils.log(`    OP_%02X @ ${scriptName}.${currentFunction}`, opcode);
-    });
-}
+//         if (opcode == 0x07) { // Only output for DebugLog (OP_07)
+//             utils.log(scriptInMemory.add(opcodeInScriptOffset + 7).readAnsiString()!); // DebugString hex representation -> 07 (** ** ** FF) 02 DD STRING
+//         }
+//         // utils.log(`    OP_%02X @ ${scriptName}.${currentFunction}`, opcode);
+//     });
+// }
