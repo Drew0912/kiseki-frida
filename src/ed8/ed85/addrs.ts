@@ -56,7 +56,7 @@ export const Addrs = (function() {
 
                 AbnormalStatus: {
                     BossFlagCheck : MODULE_ED85.base.add(0x1226E2),
-                    SetTurnsToOne : MODULE_ED85.base.add(0x12271A),
+                    SetAbnormalStatusTurnsToOne : MODULE_ED85.base.add(0x12271A),
 
                     InsightEVAValue : MODULE_ED85.base.add(0x12ECA2),
                     InsightACCValue : MODULE_ED85.base.add(0x12EC97),
@@ -118,7 +118,7 @@ export const Addrs = (function() {
 
                 AbnormalStatus: {
                     BossFlagCheck : MODULE_ED85.base.add(0x122BC2),
-                    SetTurnsToOne : MODULE_ED85.base.add(0x122BFA),
+                    SetAbnormalStatusTurnsToOne : MODULE_ED85.base.add(0x122BFA),
 
                     InsightEVAValue : MODULE_ED85.base.add(0x12F592),
                     InsightACCValue : MODULE_ED85.base.add(0x12F587),

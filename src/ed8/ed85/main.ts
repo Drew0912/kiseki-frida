@@ -10,6 +10,9 @@ import { hookScriptExtender } from "./mods/scriptExtender";
 import { ScriptManager } from "./types/scriptManager";
 import { ScriptId } from "./types/types";
 import { addOpcodeHook, resetOpcodeHooks } from "./mods/scriptExtender";
+import { abnormalStatusTurnsWithBossFlagMinusOne } from "./mods/abnormalStatusWithBossFlag";
+import { braveOrderDownOnEnemy } from "./mods/braveOrderDurationDownOnEnemyTurn";
+
 rpc.exports = {
     // Needed as load does not happen before injecting frida by CLI.
     loadScripts: function() {
@@ -34,7 +37,10 @@ rpc.exports = {
 function main() {
     setupOutputDebugInfo(LoggerLevel.OutputPrintf);
     hookScriptExtender();
-    hookDebug()
+    hookDebug();
+
+    abnormalStatusTurnsWithBossFlagMinusOne();
+    braveOrderDownOnEnemy();
 }
 
 main();
