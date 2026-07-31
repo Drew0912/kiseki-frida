@@ -13,7 +13,7 @@ export function setLoggerLevel(value: LoggerLevel) {
     loggerLevel = value;
 }
 
-// More accurate logger but gives less information.
+// More accurate logger but gives less information. Not really needed now.
 function hookOutputDebugString() {
     // Not needed?
     // Interceptor2.jmp(

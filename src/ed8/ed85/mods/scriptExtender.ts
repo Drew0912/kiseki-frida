@@ -4,7 +4,7 @@ import * as utils from "../../../utils";
 
 import { ED85 } from "../types/ed85";
 
-// import { setLoggerLevel } from "./logger";
+import { setLoggerLevel } from "./logger";
 import { displayEnemyCPByName } from "./displayEnemyStats";
 // import { addToReplacedBGMList, loadReplacedBGMFromJSON, resetReplacedBGMList, writeReplacedBGMToJSON } from "./bgmControl";
 
@@ -103,16 +103,21 @@ export function hookScriptExtender() {
                 utils.log(`    Call2SE(${stringInF1})`);
 
                 if (stringInF1.slice(0, 6) == 'SBreak'){
-                    ED85.SBreak(parseInt(stringInF1.slice(7)));
-                    // utils.log("SBreak");
-                }            
-                else if (stringInF1.slice(0, 6) == 'opcode') {
+                    const pseudoChrId = parseInt(stringInF1.slice(7));
+                    ED85.SBreak(pseudoChrId);
+                }
+                
+                // else if (stringInF1 == 'TestSE') {
+                //     utils.log("TestSE");
+                // }
+
+                else if (stringInF1.slice(0, 6) == 'Opcode') {
                     switch(stringInF1) {
-                        case 'opcodeTracingOn': {
+                        case 'OpcodeTracingOn()': {
                             tracing = true;
                             break;
                         }
-                        case 'opcodeTracingOff': {
+                        case 'OpcodeTracingOff()': {
                             tracing = false;
                             break;
                         }
@@ -124,29 +129,12 @@ export function hookScriptExtender() {
                 else if (stringInF1.slice(0, 25) == 'BraveOrderEffectHookReset') {
                     resetPartyEfficacy();
                 }
-                // else if (stringInF1.slice(0, 15) == 'OutputDebugInfo') {
-                //     switch(stringInF1) {
-                //         case 'OutputDebugInfo0': {
-                //             setLoggerLevel(0);
-                //             break;
-                //         }
-                //         case 'OutputDebugInfo1': {
-                //             setLoggerLevel(1);
-                //             break;
-                //         }
-                //         case 'OutputDebugInfo2': {
-                //             setLoggerLevel(2);
-                //             break;
-                //         }
-                //         case 'OutputDebugInfo3': {
-                //             setLoggerLevel(3);
-                //             break;
-                //         }
-                //     }
-                // }
-                else if (stringInF1 == 'TestSE') {
-                    utils.log("TestSE");
+
+                else if (stringInF1.slice(0, 20) == 'OutputDebugInfoLevel') {
+                    const loggerLevel = parseInt(stringInF1.slice(21, -1));
+                    setLoggerLevel(loggerLevel);
                 }
+
                 else if (stringInF1 == "TurnCounterEnemy") {
                     // Make it so that enemy turns do not increase this value.
                     ED85.battleProc.BattleResultManager.turnsPassedInBattle--;
@@ -158,6 +146,7 @@ export function hookScriptExtender() {
                 // else if (stringInF1.slice(0,11) == 'ReplaceDesc') {
                 //     replaceDescriptionWithEnemyStats(parseInt(stringInF1.slice(12)));
                 // }
+
                 // else if (stringInF1.slice(0,10) == 'ReplaceBGM') {
                 //     const str = stringInF1.slice(11,stringInF1.length-1).split(', ')
                 //     addToReplacedBGMList({oldBGMId: parseInt(str[0]), replacedBGMId: parseInt(str[1])});
