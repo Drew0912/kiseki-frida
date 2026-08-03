@@ -66,6 +66,9 @@ export const Addrs = (function() {
                     LimitEVAInstruction : MODULE_ED85.base.add(0x12EC8B),
                 },
 
+                SolidGuardDamageCalc : MODULE_ED85.base.add(0x11FA34),
+                ProtectDamageCalc: MODULE_ED85.base.add(0x11fA10),
+
                 BODurationDownOnEnemyTurn : MODULE_ED85.base.add(0x0E1968),
 
                 VFTable: {
@@ -74,68 +77,68 @@ export const Addrs = (function() {
 
                 PlayBGM : MODULE_ED85.base.add(0x342CC0),
             };
-        case 'ed85_v114':
-            return {
-                Logger: {
-                    OutputDebugStringW : MODULE_ED85.base.add(0x0B3D90), // Covers less strings, more accurate as does not need printf.
-                    OutputDebugStringA : MODULE_ED85.base.add(0x727940), // Never called?
-                    Ansi2UTF8 : MODULE_ED85.base.add(0x0B2EF0),
-                    Output_Printf : MODULE_ED85.base.add(0x727970),
-                },
+        // case 'ed85_v114':
+        //     return {
+        //         Logger: {
+        //             OutputDebugStringW : MODULE_ED85.base.add(0x0B3D90), // Covers less strings, more accurate as does not need printf.
+        //             OutputDebugStringA : MODULE_ED85.base.add(0x727940), // Never called?
+        //             Ansi2UTF8 : MODULE_ED85.base.add(0x0B2EF0),
+        //             Output_Printf : MODULE_ED85.base.add(0x727970),
+        //         },
 
-                InfoString: {
-                    TitleScreenVerStringData : MODULE_ED85.base.add(0xC62890),
-                    TitleScreenVerStringCode : MODULE_ED85.base.add(0x65AF66), // Instruction after lea rdx.
-                    WindowTextString : MODULE_ED85.base.add(0x0B7C5C), //Instruction after loading regs.
-                },
+        //         InfoString: {
+        //             TitleScreenVerStringData : MODULE_ED85.base.add(0xC62890),
+        //             TitleScreenVerStringCode : MODULE_ED85.base.add(0x65AF66), // Instruction after lea rdx.
+        //             WindowTextString : MODULE_ED85.base.add(0x0B7C5C), //Instruction after loading regs.
+        //         },
 
-                File: {
-                    Open : MODULE_ED85.base.add(0x088580),
-                    GetSize : MODULE_ED85.base.add(0x088A30),
-                    DLCAssetIO : MODULE_ED85.base.add(0x06D9A0),
-                },
+        //         File: {
+        //             Open : MODULE_ED85.base.add(0x088580),
+        //             GetSize : MODULE_ED85.base.add(0x088A30),
+        //             DLCAssetIO : MODULE_ED85.base.add(0x06D9A0),
+        //         },
 
-                ED85: {
-                    SharedInstance : MODULE_ED85.base.add(0xE87060),
-                    HandleActMenu : MODULE_ED85.base.add(0x32BDA0),
-                    PlayerSBreak : MODULE_ED85.base.add(0x0DC9C0),
-                },
+        //         ED85: {
+        //             SharedInstance : MODULE_ED85.base.add(0xE87060),
+        //             HandleActMenu : MODULE_ED85.base.add(0x32BDA0),
+        //             PlayerSBreak : MODULE_ED85.base.add(0x0DC9C0),
+        //         },
 
-                Script: {
-                    Load : MODULE_ED85.base.add(0x5A2A90),
-                    Call : MODULE_ED85.base.add(0x5A2DA0),
-                    ScriptInterpreter : MODULE_ED85.base.add(0x5A3D30),
-                },
+        //         Script: {
+        //             Load : MODULE_ED85.base.add(0x5A2A90),
+        //             Call : MODULE_ED85.base.add(0x5A2DA0),
+        //             ScriptInterpreter : MODULE_ED85.base.add(0x5A3D30),
+        //         },
 
-                ScriptManager: {
-                    LoadLibraries : MODULE_ED85.base.add(0x2CD880),
-                    GetScriptByID : MODULE_ED85.base.add(0x5A1CA0),
-                    // InitScripts   : MODULE_ED85.base.add(0x2CB5F0), //v1.0.8
-                    // InitED8Script : MODULE_ED85.base.add(0x10D410), //v1.0.8
-                    InitED8Script : MODULE_ED85.base.add(0x5A2980), // Not needed, used in InitED8ScriptAndScriptScn.
-                    InitED8ScriptAndScriptScn : MODULE_ED85.base.add(0x10D430),
-                },
+        //         ScriptManager: {
+        //             LoadLibraries : MODULE_ED85.base.add(0x2CD880),
+        //             GetScriptByID : MODULE_ED85.base.add(0x5A1CA0),
+        //             // InitScripts   : MODULE_ED85.base.add(0x2CB5F0), //v1.0.8
+        //             // InitED8Script : MODULE_ED85.base.add(0x10D410), //v1.0.8
+        //             InitED8Script : MODULE_ED85.base.add(0x5A2980), // Not needed, used in InitED8ScriptAndScriptScn.
+        //             InitED8ScriptAndScriptScn : MODULE_ED85.base.add(0x10D430),
+        //         },
 
-                AbnormalStatus: {
-                    BossFlagCheck : MODULE_ED85.base.add(0x122BC2),
-                    SetAbnormalStatusTurnsToOne : MODULE_ED85.base.add(0x122BFA),
+        //         AbnormalStatus: {
+        //             BossFlagCheck : MODULE_ED85.base.add(0x122BC2),
+        //             SetAbnormalStatusTurnsToOne : MODULE_ED85.base.add(0x122BFA),
 
-                    InsightEVAValue : MODULE_ED85.base.add(0x12F592),
-                    InsightACCValue : MODULE_ED85.base.add(0x12F587),
-                    BlindEVAValue : MODULE_ED85.base.add(0x12F5A7),
-                    BlindACCValue : MODULE_ED85.base.add(0x12F59E),
+        //             InsightEVAValue : MODULE_ED85.base.add(0x12F592),
+        //             InsightACCValue : MODULE_ED85.base.add(0x12F587),
+        //             BlindEVAValue : MODULE_ED85.base.add(0x12F5A7),
+        //             BlindACCValue : MODULE_ED85.base.add(0x12F59E),
 
-                    LimitEVAInstruction : MODULE_ED85.base.add(0x12F57B),
-                },
+        //             LimitEVAInstruction : MODULE_ED85.base.add(0x12F57B),
+        //         },
 
-                BODurationDownOnEnemyTurn : MODULE_ED85.base.add(0x0E1488),
+        //         BODurationDownOnEnemyTurn : MODULE_ED85.base.add(0x0E1488),
 
-                VFTable: {
-                    BattleCharWork : MODULE_ED85.base.add(0xC290C0),
-                },
+        //         VFTable: {
+        //             BattleCharWork : MODULE_ED85.base.add(0xC290C0),
+        //         },
 
-                PlayBGM : MODULE_ED85.base.add(0x3437B0),
-            };
+        //         PlayBGM : MODULE_ED85.base.add(0x3437B0),
+        //     };
     }
 })();
 
