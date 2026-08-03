@@ -81,7 +81,7 @@ function hookOutputPrintf() {
                         }
                 });
                 
-                utils.log(`${formatted}`);
+                utils.log(`[LOG]:${formatted}`);
             }
         }
     });
