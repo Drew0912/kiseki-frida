@@ -16,7 +16,6 @@ export function patchProtectiveWall(percentValue: number){
     // ADD ECX ECX
     // (10% damage)
     Memory.patchCode(Addrs.SolidGuardDamageCalc, 6, (code) => {
-        // ptr(0x14011fA34)
         code.writeU8(0x41);
         code.add(1).writeU8(0x6B);
         code.add(2).writeU8(0xC8);
