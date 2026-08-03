@@ -23,4 +23,8 @@ export const API = {
     USER32: {
         GetAsyncKeyState: new NativeFunction(Modules.USER32.getExportByName('GetAsyncKeyState'), 'int16', ['int32']),
     },
+
+    KERNEL32: {
+        OutputDebugStringA : new NativeFunction(Modules.KERNEL32.getExportByName('OutputDebugStringA'), 'void', ['pointer'], 'win64'),
+    }
 };
