@@ -50,6 +50,14 @@ export class BattleProc extends NativePointerObject {
         return undefined;
     }
 
+    static forEachPartyMember(callback: (battleChar: BattleCharacter, index: number) => void) {
+        for (let i = 0; i < this.numOfPartyMembers; i++) {
+            const battleChar = this.getBattleCharWorkForPartyNumber(i);
+            if (battleChar)
+                callback(battleChar, i);
+        }
+    }
+
     // ED85.battleProc.SBreakParam1.add(0x358) (braveOrderDurationDownOnEnemyTurn)
     // Offsets == 0x8188
     get battleATManager(): BattleATManager {
