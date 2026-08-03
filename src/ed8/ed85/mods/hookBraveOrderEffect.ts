@@ -29,23 +29,6 @@ enum AbnormalStatusEfficacy {
     // add stat down
 }
 
-
-
-export function initBraveOrderEffect(str: string) {
-    const inputs = str.split(',');
-
-    // ("AbnormalStatus", 0x1, value)
-    if (inputs[0].slice(1, -1) == 'AbnormalStatus') {
-        let effect = Number(inputs[1]);
-        let value = Number(inputs[2]);
-        for(let eff in AbnormalStatusEfficacy) {
-            if(effect & Number(eff)) {
-                changePartyAbnormalStatusEfficacy(Number(eff), value);
-            }
-        }
-    }
-}
-
 const efficacyPropertyMap = {
     [AbnormalStatusEfficacy.Poison]: "poisonEfficacy",
     [AbnormalStatusEfficacy.Seal]: "sealEfficacy",
@@ -64,6 +47,25 @@ const efficacyPropertyMap = {
     [AbnormalStatusEfficacy.Vanish]: "vanishEfficacy",
 } as const;
 
+
+
+export function initBraveOrderEffect(str: string) {
+    const [type, effectStr, valueStr] = str.split(',');
+
+    // ("AbnormalStatus", 0x1, value)
+    if (type.slice(1, -1) == 'AbnormalStatus') {
+        const effectMask = Number(effectStr);
+        const value = Number(valueStr);
+
+        for (const effect of Object.keys(efficacyPropertyMap).map(Number)) {
+            if (effectMask & effect) {
+                changePartyAbnormalStatusEfficacy(effect, value);
+            }   
+        }
+    }
+}
+
+
 function changePartyAbnormalStatusEfficacy(effect: number, value: number) {
     const property = efficacyPropertyMap[effect as keyof typeof efficacyPropertyMap];
 
@@ -72,16 +74,12 @@ function changePartyAbnormalStatusEfficacy(effect: number, value: number) {
 
     const oriValues = Array(8).fill(-1);
 
-    for (let i = 0; i < BattleProc.numOfPartyMembers; i++) {
-        const partyBattleChar = BattleProc.getBattleCharWorkForPartyNumber(i);
-        if (!partyBattleChar)
-            continue;
-
-        utils.log(`(${partyBattleChar.character.name}:${i}) ${property} original value: ${partyBattleChar[property]}`);
-        oriValues[i] = partyBattleChar[property];
-        partyBattleChar[property] = value;
-        utils.log(`(${partyBattleChar.character.name}:${i}) ${property} new value: ${partyBattleChar[property]}`);
-    }
+    BattleProc.forEachPartyMember((battleChar, i) => {
+        utils.log(`(${battleChar.character.name}:${i}) ${property} original value: ${battleChar[property]}`);
+        oriValues[i] = battleChar[property];
+        battleChar[property] = value
+        utils.log(`(${battleChar.character.name}:${i}) ${property} new value: ${battleChar[property]}`);
+    })
 
     effList.push({
         abnormalStatus: Number(effect),
@@ -105,15 +103,11 @@ export function resetPartyEfficacy() {
         if (!property)
             continue;
 
-        for (let i = 0; i < numOfPartyMembers; i++) {
-            const partyBattleChar = BattleProc.getBattleCharWorkForPartyNumber(i);
-            if (!partyBattleChar)
-                continue;
-
-            utils.log(`(${partyBattleChar.character.name}:${i}) ${property} modified value: ${partyBattleChar[property]}`);
-            partyBattleChar[property] = effect.originalValues[i];
-            utils.log(`(${partyBattleChar.character.name}:${i}) ${property} restored value: ${partyBattleChar[property]}`);
-        }
+        BattleProc.forEachPartyMember((battleChar, i) => {
+            utils.log(`(${battleChar.character.name}:${i}) ${property} modified value: ${battleChar[property]}`);
+            battleChar[property] = effect.originalValues[i];
+            utils.log(`(${battleChar.character.name}:${i}) ${property} restored value: ${battleChar[property]}`);
+        })
     }
     utils.log("Finished Kiseki-Frida.hookBraveOrderEffect.resetPartyEfficacy()");
     // Reset stored data.
