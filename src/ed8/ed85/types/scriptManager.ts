@@ -1,6 +1,6 @@
 import { Addrs, Offsets } from "../addrs";
 import { Script } from "../types/script";
-import { ScriptId } from "./types";
+import { ScriptId } from "./consts";
 import { ED85 } from "./ed85";
 import { BattleProc } from "./battleProc";
 import { isPathExists } from "../../../utils";

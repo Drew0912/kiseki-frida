@@ -8,7 +8,7 @@ import { hookDebug } from "./mods/debugScripts";
 import { hookScriptExtender } from "./mods/scriptExtender";
 
 import { ScriptManager } from "./types/scriptManager";
-import { ScriptId } from "./types/types";
+import { ScriptId } from "./types/consts";
 import { addOpcodeHook, resetOpcodeHooks } from "./mods/scriptExtender";
 import { abnormalStatusTurnsWithBossFlagMinusOne } from "./mods/abnormalStatusWithBossFlag";
 import { braveOrderDownOnEnemy } from "./mods/braveOrderDurationDownOnEnemyTurn";

@@ -1,6 +1,6 @@
 import { BattleProc } from "../types/battleProc";
 import * as utils from "../../../utils";
-import { stat } from "fs";
+import { AbnormalStatusEfficacy } from "../types/consts";
 
 // To do
 // Add reset to start of battle (look into) if brave order not finished on battle end. 
@@ -15,26 +15,6 @@ interface IAbnormalStatusData {
 }
 let effList : IAbnormalStatusData[] = []
 
-enum AbnormalStatusEfficacy {
-    Poison              = 0x00000001,
-    Seal                = 0x00000002,
-    Mute                = 0x00000004,
-    Blind               = 0x00000008,
-    Sleep               = 0x00000010,
-    Burn                = 0x00000020,
-    Freeze              = 0x00000040,
-    Petrify             = 0x00000080,
-    Faint               = 0x00000100,
-    Confuse             = 0x00000200,
-    Charm               = 0x00000400, // (not needed)
-    Deathblow           = 0x00000800,
-    Nightmare           = 0x00001000,
-    Delay               = 0x00002000,
-    Vanish              = 0x00004000, // (not needed)
-    BalanceDown         = 0x40000000, // to do (not needed)
-    // add stat down
-}
-
 const efficacyPropertyMap = {
     [AbnormalStatusEfficacy.Poison]: "poisonEfficacy",
     [AbnormalStatusEfficacy.Seal]: "sealEfficacy",
@@ -46,23 +26,22 @@ const efficacyPropertyMap = {
     [AbnormalStatusEfficacy.Petrify]: "petrifyEfficacy",
     [AbnormalStatusEfficacy.Faint]: "faintEfficacy",
     [AbnormalStatusEfficacy.Confuse]: "confuseEfficacy",
-    [AbnormalStatusEfficacy.Charm]: "charmEfficacy",
+    [AbnormalStatusEfficacy.Charm]: "charmEfficacy", // (not used)
     [AbnormalStatusEfficacy.Deathblow]: "deathblowEfficacy",
     [AbnormalStatusEfficacy.Nightmare]: "nightmareEfficacy",
     [AbnormalStatusEfficacy.Delay]: "delayEfficacy",
-    [AbnormalStatusEfficacy.Vanish]: "vanishEfficacy",
+    [AbnormalStatusEfficacy.Vanish]: "vanishEfficacy", // (not used)
 } as const;
 
 
 export function initBraveOrderEffect(str: string) {
+    // ("AbnormalStatus", effect, 0x1, value)
     const [type, effectStr, statDown, valueStr] = str.split(',');
 
-    const isStatDown = Number(statDown) === 1;
-
-    // ("AbnormalStatus", effect, 0x1, value)
     if (type.slice(1, -1) == 'AbnormalStatus') {
         const effectMask = Number(effectStr);
         const value = Number(valueStr);
+        const isStatDown = Number(statDown) === 1;
 
         for (const effect of Object.keys(efficacyPropertyMap).map(Number)) {
             if (effectMask & effect) {
@@ -121,8 +100,6 @@ function changePartyStatDownEfficacy(value: number) {
 export function resetPartyEfficacy() {
     if (!isChanged)
         return;
-
-    // const numOfPartyMembers = BattleProc.numOfPartyMembers;
 
     for (const effect of effList) {
         const property = effect.isStatDown ? "statDownEfficacy" : efficacyPropertyMap[

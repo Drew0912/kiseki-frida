@@ -161,7 +161,7 @@ export function hookScriptExtender() {
                 //     loadReplacedBGMFromJSON();
                 // }
                 else {
-                    utils.log(`[SE] SED8Frida.scriptExtender: Unknown string (${stringInF1})`);
+                    utils.log(`[SE] Kiseki-Frida.scriptExtender: Unknown string (${stringInF1})`);
                 }
                 (Script.add(0x78)).writeU32(opcodeInScriptOffset + 6 + (stringInF1.length+1)) // Edit VM pos.
                 return Number(true); // Don't actually know what it returns...

@@ -1,7 +1,7 @@
 import { Addrs } from "../addrs";
 import { Interceptor2 } from "../../../utils";
 import { ScriptManager } from "../types/scriptManager";
-import { ScriptId } from "../types/types";
+import { ScriptId } from "../types/consts";
 import { API } from "../../../modules";
 
 export function hookDebug() {

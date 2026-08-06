@@ -78,3 +78,22 @@ export enum AbnormalStatus2 {
     Marking               = 0x00040000,
     BlazingDemon          = 0x00080000,
 }
+
+export enum AbnormalStatusEfficacy {
+    Poison              = 0x00000001,
+    Seal                = 0x00000002,
+    Mute                = 0x00000004,
+    Blind               = 0x00000008,
+    Sleep               = 0x00000010,
+    Burn                = 0x00000020,
+    Freeze              = 0x00000040,
+    Petrify             = 0x00000080,
+    Faint               = 0x00000100,
+    Confuse             = 0x00000200,
+    Charm               = 0x00000400,
+    Deathblow           = 0x00000800,
+    Nightmare           = 0x00001000,
+    Delay               = 0x00002000,
+    Vanish              = 0x00004000,
+    // BalanceDown         = 0x40000000, // Efficacy not found, no vanilla efficacy (not needed)
+}
