@@ -100,7 +100,7 @@ export function hookScriptExtender() {
             // Custom opcode.
             if (Opcode == 0xF1) {
                 const stringInF1 = scriptInMemory.add(opcodeInScriptOffset + 6).readAnsiString()!; // Hex representation -> F1 (** ** ** FF) DD STRING.
-                utils.log(`    Call2SE(${stringInF1})`);
+                utils.log(`[SE]    Call2SE(${stringInF1})`);
 
                 if (stringInF1.slice(0, 6) == 'SBreak'){
                     const pseudoChrId = parseInt(stringInF1.slice(7));
@@ -161,7 +161,7 @@ export function hookScriptExtender() {
                 //     loadReplacedBGMFromJSON();
                 // }
                 else {
-                    utils.log(`ED8Frida.scriptExtender: Unknown string (${stringInF1})`);
+                    utils.log(`[SE] SED8Frida.scriptExtender: Unknown string (${stringInF1})`);
                 }
                 (Script.add(0x78)).writeU32(opcodeInScriptOffset + 6 + (stringInF1.length+1)) // Edit VM pos.
                 return Number(true); // Don't actually know what it returns...

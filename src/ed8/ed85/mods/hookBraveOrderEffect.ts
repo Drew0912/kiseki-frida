@@ -1,10 +1,16 @@
 import { BattleProc } from "../types/battleProc";
 import * as utils from "../../../utils";
+import { stat } from "fs";
+
+// To do
+// Add reset to start of battle (look into) if brave order not finished on battle end. 
+// Should only need to reset stored values? and not touch BattleCharacter in mem.
 
 let isChanged = false;
 
 interface IAbnormalStatusData {
     abnormalStatus: number,
+    isStatDown: boolean,
     originalValues: number[],
 }
 let effList : IAbnormalStatusData[] = []
@@ -20,12 +26,12 @@ enum AbnormalStatusEfficacy {
     Petrify             = 0x00000080,
     Faint               = 0x00000100,
     Confuse             = 0x00000200,
-    Charm               = 0x00000400,
+    Charm               = 0x00000400, // (not needed)
     Deathblow           = 0x00000800,
     Nightmare           = 0x00001000,
     Delay               = 0x00002000,
-    Vanish              = 0x00004000,
-    BalanceDown         = 0x40000000, // to do
+    Vanish              = 0x00004000, // (not needed)
+    BalanceDown         = 0x40000000, // to do (not needed)
     // add stat down
 }
 
@@ -48,11 +54,12 @@ const efficacyPropertyMap = {
 } as const;
 
 
-
 export function initBraveOrderEffect(str: string) {
-    const [type, effectStr, valueStr] = str.split(',');
+    const [type, effectStr, statDown, valueStr] = str.split(',');
 
-    // ("AbnormalStatus", 0x1, value)
+    const isStatDown = Number(statDown) === 1;
+
+    // ("AbnormalStatus", effect, 0x1, value)
     if (type.slice(1, -1) == 'AbnormalStatus') {
         const effectMask = Number(effectStr);
         const value = Number(valueStr);
@@ -62,9 +69,10 @@ export function initBraveOrderEffect(str: string) {
                 changePartyAbnormalStatusEfficacy(effect, value);
             }   
         }
+        if (isStatDown)
+            changePartyStatDownEfficacy(value);
     }
 }
-
 
 function changePartyAbnormalStatusEfficacy(effect: number, value: number) {
     const property = efficacyPropertyMap[effect as keyof typeof efficacyPropertyMap];
@@ -83,6 +91,27 @@ function changePartyAbnormalStatusEfficacy(effect: number, value: number) {
 
     effList.push({
         abnormalStatus: Number(effect),
+        isStatDown: false,
+        originalValues: oriValues,
+    });
+
+    isChanged = true;
+}
+
+function changePartyStatDownEfficacy(value: number) {
+    const oriValues = Array(8).fill(-1);
+    const property = "statDownEfficacy";
+
+    BattleProc.forEachPartyMember((battleChar, i) => {
+        utils.log(`(${battleChar.character.name}:${i}) ${property} original value: ${battleChar[property]}`);
+        oriValues[i] = battleChar[property];
+        battleChar[property] = value
+        utils.log(`(${battleChar.character.name}:${i}) ${property} new value: ${battleChar[property]}`);
+    })
+
+    effList.push({
+        abnormalStatus: 0,
+        isStatDown: true,
         originalValues: oriValues,
     });
 
@@ -93,10 +122,10 @@ export function resetPartyEfficacy() {
     if (!isChanged)
         return;
 
-    const numOfPartyMembers = BattleProc.numOfPartyMembers;
+    // const numOfPartyMembers = BattleProc.numOfPartyMembers;
 
     for (const effect of effList) {
-        const property = efficacyPropertyMap[
+        const property = effect.isStatDown ? "statDownEfficacy" : efficacyPropertyMap[
             effect.abnormalStatus as keyof typeof efficacyPropertyMap
         ];
 
