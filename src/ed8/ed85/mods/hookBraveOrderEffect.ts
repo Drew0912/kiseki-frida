@@ -39,6 +39,7 @@ export function initBraveOrderEffect(str: string) {
     const [type, effectStr, statDown, valueStr] = str.split(',');
 
     if (type.slice(1, -1) == 'AbnormalStatus') {
+        utils.log("[KF] Starting Kiseki-Frida.hookBraveOrderEffect.initBraveOrderEffect(AbnormalStatus, ...)");
         const effectMask = Number(effectStr);
         const value = Number(valueStr);
         const isStatDown = Number(statDown) === 1;
@@ -62,10 +63,10 @@ function changePartyAbnormalStatusEfficacy(effect: number, value: number) {
     const oriValues = Array(8).fill(-1);
 
     BattleProc.forEachPartyMember((battleChar, i) => {
-        utils.log(`(${battleChar.character.name}:${i}) ${property} original value: ${battleChar[property]}`);
+        utils.log(`[KF] Change AbnormalStatusEfficacy: (${battleChar.character.name}:${i}) ${property} original value: ${battleChar[property]}`);
         oriValues[i] = battleChar[property];
         battleChar[property] = value
-        utils.log(`(${battleChar.character.name}:${i}) ${property} new value: ${battleChar[property]}`);
+        utils.log(`[KF] Change AbnormalStatusEfficacy: (${battleChar.character.name}:${i}) ${property} new value: ${battleChar[property]}`);
     })
 
     effList.push({
@@ -82,10 +83,10 @@ function changePartyStatDownEfficacy(value: number) {
     const property = "statDownEfficacy";
 
     BattleProc.forEachPartyMember((battleChar, i) => {
-        utils.log(`(${battleChar.character.name}:${i}) ${property} original value: ${battleChar[property]}`);
+        utils.log(`[KF] Change AbnormalStatusEfficacy: (${battleChar.character.name}:${i}) ${property} original value: ${battleChar[property]}`);
         oriValues[i] = battleChar[property];
         battleChar[property] = value
-        utils.log(`(${battleChar.character.name}:${i}) ${property} new value: ${battleChar[property]}`);
+        utils.log(`[KF] Change AbnormalStatusEfficacy: (${battleChar.character.name}:${i}) ${property} new value: ${battleChar[property]}`);
     })
 
     effList.push({
@@ -110,12 +111,12 @@ export function resetPartyEfficacy() {
             continue;
 
         BattleProc.forEachPartyMember((battleChar, i) => {
-            utils.log(`(${battleChar.character.name}:${i}) ${property} modified value: ${battleChar[property]}`);
+            utils.log(`[KF] Reset AbnormalStatusEfficacy: (${battleChar.character.name}:${i}) ${property} modified value: ${battleChar[property]}`);
             battleChar[property] = effect.originalValues[i];
-            utils.log(`(${battleChar.character.name}:${i}) ${property} restored value: ${battleChar[property]}`);
+            utils.log(`[KF] Reset AbnormalStatusEfficacy: (${battleChar.character.name}:${i}) ${property} restored value: ${battleChar[property]}`);
         })
     }
-    utils.log("Finished Kiseki-Frida.hookBraveOrderEffect.resetPartyEfficacy()");
+    utils.log("[KF] Finished Kiseki-Frida.hookBraveOrderEffect.resetPartyEfficacy()");
     // Reset stored data.
     effList = [];
     isChanged = false;

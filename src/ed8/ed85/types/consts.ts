@@ -79,6 +79,7 @@ export enum AbnormalStatus2 {
     BlazingDemon          = 0x00080000,
 }
 
+// Abnormal Statuses efficacy that can be changed
 export enum AbnormalStatusEfficacy {
     Poison              = 0x00000001,
     Seal                = 0x00000002,
