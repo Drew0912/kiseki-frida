@@ -10,8 +10,10 @@
     "build_ed85": "frida-compile --tsconfig tsconfig.json src/ed8/ed85/main.ts -o \"out\\ed85\\hnk.js\" -c",
     "watch_ed85": "frida-compile --tsconfig tsconfig.json src/ed8/ed85/main.ts -o \"out\\ed85\\hnk.js\" -w",
     "attach_ed85": "frida -n hnk.exe -l \"out/ed85/hnk.js\"",
-    "build_sora1": "frida-compile --tsconfig tsconfig.json src/sora/sora1/main.ts -o \"out\\sora1\\sora_1st.js\" -c",
-    "watch_sora1": "frida-compile --tsconfig tsconfig.json src/sora/sora1/main.ts -o \"out\\sora1\\sora_1st.js\" -w"
+    "build_sora1": "frida-compile --tsconfig tsconfig.json src/sora/sora_r_fc/main.ts -o \"out\\sora_r_fc\\sora_1st.js\" -c",
+    "watch_sora1": "frida-compile --tsconfig tsconfig.json src/sora/sora_r_fc/main.ts -o \"out\\sora_r_fc\\sora_1st.js\" -w",
+    "build_sora2": "frida-compile --tsconfig tsconfig.json src/sora/sora_r_sc/main.ts -o \"out\\sora_r_sc\\sora_2nd.js\" -c",
+    "watch_sora2": "frida-compile --tsconfig tsconfig.json src/sora/sora_r_sc/main.ts -o \"out\\sora_r_sc\\sora_2nd.js\" -w"
   },
   "devDependencies": {
     "@types/frida-gum": "^18.8.2",
