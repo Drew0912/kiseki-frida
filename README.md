@@ -20,7 +20,9 @@ To do this, first install Python. I would recommend using a virtual environment 
 
 Ensure you are using the virtual environment (a `.bat` file is provided to easily use the virtual environment) and install `frida-tools` by running
 
-`pip install frida-tools`
+`pip install frida-tools==13.7.1 frida==16.4.10`
+
+Note that this is not the latest version as the latest version has issues.
 
 ## Usage
 

@@ -31,7 +31,7 @@ export class Interceptor2 {
     ) {
         // Adding { exceptions: "propagate" } removes system error when creating new NativeFunctions on windows functions.
         // Issue not present on Frida 16.4.10 and older, only newer?
-        const stub = new NativeFunction(target, retType, argTypes, { exceptions: "propagate" });
+        const stub = new NativeFunction(target, retType, argTypes);
         Interceptor.replace(target, new NativeCallback(replacement, retType, argTypes, 'win64'));
         return stub;
     }
