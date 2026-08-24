@@ -54,6 +54,20 @@ export const Addrs = (function() {
                     InitED8ScriptAndScriptScn : MODULE_ED85.base.add(0x10D250),
                 },
 
+                BattleCharacter: {
+                    IsChrNPC : MODULE_ED85.base.add(0x0E7A40),
+                    InitNpcCraftAI : MODULE_ED85.base.add(0x0EA0C0),
+                    InitEquipAndOrbs : MODULE_ED85.base.add(0x0EB610),
+                    InitPartyCraft : MODULE_ED85.base.add(0x3F8D70),
+                    InitMagic : MODULE_ED85.base.add(0x3FA400),
+
+                    SetMasterQuartzData : MODULE_ED85.base.add(0x16B850), // (battleCharacter.0x550, MQ_ID, bool(is_sub?)?)
+                },
+
+                BattleInfoTable: {
+                    GetCraftByID : MODULE_ED85.base.add(0x0C8A00),
+                },
+
                 AbnormalStatus: {
                     BossFlagCheck : MODULE_ED85.base.add(0x1226E2),
                     SetAbnormalStatusTurnsToOne : MODULE_ED85.base.add(0x12271A),
@@ -144,10 +158,18 @@ export const Addrs = (function() {
 
 export const Offsets = (function() {
     return {
+        // SharedInstance
         ED85 : {
             ScriptManager : 0x1DA8,
             systemScript : 0x5F08F0,
-            t_bgm : 0x5F8120, //???
+
+            t_bgm : 0x5F8120, // ???
+            t_mons : 0x5F8180, // ???
+
+            CraftList : 0x7B6850,
+            MagicList : 0x7B7050,
+            SBreakList : 0x7B8BD0,
+            BattleStyleList : 0x7B8AD0,
         },
 
         ScriptManager : {
@@ -319,6 +341,10 @@ export const Offsets = (function() {
             MirageSepith : 0x17A,
             MassSepith : 0x17C,
 
+            PartyCraft : 0x1A0, // ???, number of crafts + scrafts
+            Magic : 0x1D0, // ???, number of arts
+            SBreakCraftID : 0x212, // SharedInstance + 0x7B8BD0 + ChrId * 2
+
 
             // Test below, can change these.
             Flags : 0x420,
@@ -350,6 +376,11 @@ export const Offsets = (function() {
             BattleInfoTable : 0x4F8,
 
             SomeChrIdMaybe : 0x50A,
+
+            MasterQuartzDataTableMain : 0x550,
+            MasterQuartzDataTableSubMaybe : 0x558,
+
+            // 0x560 ... 0x584 is equipmentAndOrbs (SharedInstance + {0x7b5e4c...0x7b81e0 + (chrId * 0x14)})
         },
 
         // MODULE_ED85.BattleProc.SBreak1Param(BattleATManager) + 0x340 -> array of pointers
