@@ -61,6 +61,8 @@ export const Addrs = (function() {
                     InitPartyCraft : MODULE_ED85.base.add(0x3F8D70),
                     InitMagic : MODULE_ED85.base.add(0x3FA400),
 
+                    SomeFuncThatMovesData : MODULE_ED85.base.add(0x0C2AA0), // No idea what this function does.
+
                     SetMasterQuartzData : MODULE_ED85.base.add(0x16B850), // (battleCharacter.0x550, MQ_ID, bool(is_sub?)?)
                 },
 
